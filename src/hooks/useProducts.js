@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { fetchAllProducts } from '../services/productService';
+import { useState, useEffect } from "react";
+import { fetchAllProducts } from "../EndpontsLogics/productService";
 
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadProducts = async () => {
     try {
@@ -24,9 +24,10 @@ export const useProducts = () => {
     loadProducts();
   }, []);
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return {
@@ -36,6 +37,6 @@ export const useProducts = () => {
     error,
     searchTerm,
     setSearchTerm,
-    refreshProducts: loadProducts
+    refreshProducts: loadProducts,
   };
 };

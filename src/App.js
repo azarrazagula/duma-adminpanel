@@ -6,7 +6,7 @@ import { useProducts } from './hooks/useProducts';
 import './styles/index.css';
 
 function App() {
-  const { searchTerm, setSearchTerm, filteredProducts, products, loading, error } = useProducts();
+  const { searchTerm, setSearchTerm, filteredProducts, products, loading, error, refreshProducts } = useProducts();
 
   return (
     <div className="flex min-h-screen bg-dark">
@@ -19,6 +19,7 @@ function App() {
             products={products} 
             loading={loading} 
             error={error} 
+            refreshProducts={refreshProducts}
           />
         </section>
       </main>

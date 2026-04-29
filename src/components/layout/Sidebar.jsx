@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Settings 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -24,7 +24,7 @@ const Sidebar = () => {
           <ShoppingCart size={20} /> Orders
         </div>
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
-          <Users size={20} /> Customers
+          <Users size={20} /> Customer Care
         </div>
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
           <Settings size={20} /> Settings

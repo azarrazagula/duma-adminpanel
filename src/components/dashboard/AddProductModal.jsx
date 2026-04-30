@@ -73,7 +73,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative z-10 w-[95%] max-w-lg bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="relative z-10 w-[95%] max-w-lg bg-white border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-8">
               <div>

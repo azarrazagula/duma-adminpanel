@@ -3,8 +3,10 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
+  Tag,
   ShoppingCart,
   Users,
+  BarChart3,
   Settings,
   LogOut
 } from 'lucide-react';
@@ -17,10 +19,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const tabs = [
-    { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', path: '/products', label: 'Products', icon: Package },
+    { id: 'categories', path: '/categories', label: 'Categories', icon: Tag },
     { id: 'orders', path: '/orders', label: 'Orders', icon: ShoppingCart },
-    { id: 'customer-care', path: '/customer-care', label: 'Customer Care', icon: Users },
+    { id: 'customers', path: '/customers', label: 'Customers', icon: Users },
+    { id: 'analytics', path: '/analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'settings', path: '/settings', label: 'Settings', icon: Settings },
   ];
 
@@ -43,7 +47,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <Settings size={24} />
           </button>
         </div>
-        <nav className="flex flex-col gap-2 flex-1">
+        <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

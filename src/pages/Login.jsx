@@ -40,7 +40,7 @@ const Login = () => {
         transition={{ duration: 0.6 }}
         className="w-full max-w-[450px]"
       >
-        <div className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 rounded-[32px] p-8 md:p-10 shadow-2xl relative z-10">
+        <div className="bg-white border border-slate-200 rounded-[32px] p-8 md:p-10 shadow-2xl relative z-10">
           <div className="text-center mb-10">
             <motion.div 
               initial={{ scale: 0.8 }}

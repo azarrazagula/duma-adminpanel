@@ -18,7 +18,7 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, loading }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative z-10 w-[95%] max-w-md bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-2xl"
+            className="relative z-10 w-[95%] max-w-md bg-white border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-2xl"
           >
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-6">

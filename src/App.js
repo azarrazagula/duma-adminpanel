@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
-import Products from "./pages/Products";
-import Orders from "./pages/Orders";
 import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import Categories from "./pages/Categories";
+import Orders from "./pages/Orders";
+import Customers from "./pages/Customers";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import { useProducts } from "./hooks/useProducts";
 import { isAdminAuthenticated } from "./EndpontsLogics/authService";
@@ -52,10 +56,9 @@ function App() {
           />
           <section className="p-4 md:p-8">
             <Routes>
-              {/* Redirect root to dashboard */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard products={products} />} />
               
               <Route path="/products" element={
                 <Products
@@ -67,25 +70,19 @@ function App() {
                 />
               } />
 
-              <Route path="/orders" element={
-                <Orders
-                  filteredProducts={filteredProducts}
-                  products={products}
-                  loading={loading}
-                  error={error}
-                  refreshProducts={refreshProducts}
-                />
-              } />
+              <Route path="/categories" element={<Categories products={products} />} />
+
+              <Route path="/orders" element={<Orders />} />
+
+              <Route path="/customers" element={<Customers />} />
+
+              <Route path="/analytics" element={<Analytics products={products} />} />
+
+              <Route path="/settings" element={<Settings />} />
 
               <Route path="/login" element={<Navigate to="/dashboard" replace />} />
 
-              {/* Fallback for other tabs */}
-              <Route path="*" element={
-                <div className="text-center text-slate-500 mt-20">
-                  <h2 className="text-2xl font-bold mb-2">Coming Soon</h2>
-                  <p>This section is under construction.</p>
-                </div>
-              } />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </section>
         </main>

@@ -1,203 +1,226 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Tag, Box } from 'lucide-react';
-import AddProductModal from '../components/dashboard/AddProductModal';
-import EditProductModal from '../components/dashboard/EditProductModal';
-import DeleteConfirmationModal from '../components/dashboard/DeleteConfirmationModal';
-import { deleteProduct } from '../EndpontsLogics/productService';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ShoppingCart, Clock, Truck, CheckCircle, XCircle, ChevronDown, Package, Loader2 } from 'lucide-react';
+import { getAllOrders, updateOrderStatus } from '../EndpontsLogics/orderService';
 
-const Orders = ({ products, filteredProducts, loading, error, refreshProducts }) => {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
-  const categories = ['All', 'T-Shirt', 'Jeans'];
+  const statusFilters = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
-  const displayedProducts = filteredProducts.filter(product => {
-    if (selectedCategory === 'All') return true;
-    return product.category === selectedCategory;
-  });
-
-  const handleEditClick = (e, product) => {
-    e.stopPropagation();
-    setSelectedProduct(product);
-    setIsEditModalOpen(true);
-  };
-
-  const handleDeleteClick = (e, product) => {
-    e.stopPropagation();
-    setSelectedProduct(product);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!selectedProduct) return;
-    setDeleteLoading(true);
+  const fetchOrders = async () => {
     try {
-      await deleteProduct(selectedProduct._id);
-      refreshProducts();
-      setIsDeleteModalOpen(false);
+      setLoading(true);
+      const data = await getAllOrders();
+      setOrders(data);
     } catch (err) {
-      console.error(err.message);
-      alert('Failed to delete product');
+      console.error('Failed to fetch orders:', err);
     } finally {
-      setDeleteLoading(false);
+      setLoading(false);
     }
   };
 
-  if (loading) return <div className="p-16 text-center text-slate-500 font-medium text-lg">Loading products...</div>;
-  if (error) return <div className="p-16 text-center text-red-500 font-medium">{error}</div>;
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateOrderStatus(id, newStatus);
+      fetchOrders(); // Refresh orders after update
+    } catch (err) {
+      alert('Failed to update status: ' + err.message);
+    }
+  };
+
+  const filteredOrders = selectedStatus === 'All' ? orders : orders.filter(o => o.status === selectedStatus);
+
+  const statusConfig = {
+    Pending: { color: 'bg-amber-500/10 text-amber-600 border-amber-200', icon: <Clock size={16} />, gradient: 'from-amber-400 to-orange-500' },
+    Shipped: { color: 'bg-blue-500/10 text-blue-600 border-blue-200', icon: <Truck size={16} />, gradient: 'from-blue-400 to-indigo-500' },
+    Delivered: { color: 'bg-emerald-500/10 text-emerald-600 border-emerald-200', icon: <CheckCircle size={16} />, gradient: 'from-emerald-400 to-green-500' },
+    Cancelled: { color: 'bg-red-500/10 text-red-600 border-red-200', icon: <XCircle size={16} />, gradient: 'from-red-400 to-rose-500' },
+  };
+
+  const statusCounts = {
+    All: orders.length,
+    Pending: orders.filter(o => o.status === 'Pending').length,
+    Shipped: orders.filter(o => o.status === 'Shipped').length,
+    Delivered: orders.filter(o => o.status === 'Delivered').length,
+    Cancelled: orders.filter(o => o.status === 'Cancelled').length,
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
+        <p className="text-slate-500 font-bold">Loading orders...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-[1400px] mx-auto w-full"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
-          <div>
-            <h1 className="text-[24px] md:text-[32px] font-extrabold mb-1 md:mb-2 bg-accent-gradient bg-clip-text text-transparent">Product Cards Hub</h1>
-            <p className="text-slate-500 text-sm md:text-base font-medium">Visually manage your inventory and products</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-[1400px] mx-auto w-full"
+    >
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-[24px] md:text-[32px] font-extrabold mb-1 md:mb-2 text-slate-900">Order Management</h1>
+        <p className="text-slate-500 text-sm md:text-base font-medium">Track and manage all customer orders from your store</p>
+      </div>
+
+      {/* Status Filter Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        {statusFilters.map((status, i) => {
+          const isActive = selectedStatus === status;
+          return (
+            <motion.button
+              key={status}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              onClick={() => setSelectedStatus(status)}
+              className={`p-4 rounded-2xl text-left transition-all duration-300 ${
+                isActive
+                  ? 'bg-accent-gradient text-white shadow-[0_10px_20px_-5px_rgba(67,24,255,0.4)] scale-105 ring-2 ring-accent-primary ring-offset-2 ring-offset-[#f4f7fe]'
+                  : 'bg-white border border-slate-200 hover:border-slate-300 shadow-sm'
+              }`}
+            >
+              <div className={`text-3xl font-extrabold ${isActive ? 'text-white' : 'text-slate-900'}`}>{statusCounts[status]}</div>
+              <div className={`text-sm font-bold mt-1 ${isActive ? 'text-white/90' : 'text-slate-500'}`}>{status}</div>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* Orders List */}
+      <div className="space-y-4">
+        {filteredOrders.map((order, i) => {
+          const config = statusConfig[order.status] || statusConfig.Pending;
+          const isExpanded = expandedOrder === order._id;
+          return (
+            <motion.div
+              key={order._id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 overflow-hidden hover:shadow-lg transition-all"
+            >
+              {/* Order Row */}
+              <div
+                className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer"
+                onClick={() => setExpandedOrder(isExpanded ? null : order._id)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-white shadow-lg`}>
+                    <ShoppingCart size={20} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-extrabold text-accent-primary">#{order._id.slice(-6).toUpperCase()}</span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border ${config.color}`}>
+                        {config.icon} {order.status}
+                      </span>
+                    </div>
+                    <div className="text-sm text-slate-500 mt-1">{order.user?.name || 'Guest'} • {new Date(order.createdAt).toLocaleDateString()}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <div className="text-right">
+                    <div className="text-xl font-extrabold text-slate-900">${order.totalPrice.toFixed(2)}</div>
+                    <div className="text-xs text-slate-400 font-semibold">{order.orderItems.length} item{order.orderItems.length > 1 ? 's' : ''}</div>
+                  </div>
+                  <ChevronDown size={20} className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                </div>
+              </div>
+
+              {/* Expanded Details */}
+              {isExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  className="border-t border-slate-100 p-5 bg-slate-50/50"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                    <div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Customer</div>
+                      <div className="font-semibold text-slate-900">{order.user?.name}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</div>
+                      <div className="font-semibold text-slate-900">{order.user?.email}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</div>
+                      <div className="font-semibold text-slate-900">{order.paymentMethod}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Address</div>
+                      <div className="font-semibold text-slate-900">
+                        {order.shippingAddress.address}, {order.shippingAddress.city}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Items List */}
+                  <div className="space-y-3 mb-6">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Order Items</div>
+                    {order.orderItems.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100">
+                        <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden">
+                          {item.image ? (
+                            <img src={`http://localhost:5001${item.image}`} alt={item.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400"><Package size={20} /></div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-bold text-slate-900 text-sm">{item.name}</div>
+                          <div className="text-xs text-slate-500">Qty: {item.qty}</div>
+                        </div>
+                        <div className="font-bold text-slate-900">${(item.price * item.qty).toFixed(2)}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Status Update Buttons */}
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider self-center mr-2">Update Status:</span>
+                    {['Pending', 'Shipped', 'Delivered', 'Cancelled'].map((s) => (
+                      <button
+                        key={s}
+                        onClick={(e) => { e.stopPropagation(); handleStatusChange(order._id, s); }}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                          order.status === s
+                            ? `bg-gradient-to-r ${statusConfig[s].gradient} text-white shadow-md`
+                            : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        {statusConfig[s].icon} {s}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          );
+        })}
+
+        {filteredOrders.length === 0 && (
+          <div className="py-20 flex flex-col items-center justify-center text-slate-400">
+            <ShoppingCart size={64} className="mb-4 opacity-50" />
+            <p className="text-xl font-semibold">No orders found with this status.</p>
           </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-accent-gradient text-white px-6 py-3 rounded-xl text-sm md:text-base font-semibold flex items-center gap-2 hover:scale-105 transition-all shadow-[0_10px_20px_-5px_rgba(67,24,255,0.4)] w-full sm:w-auto justify-center"
-          >
-            <Plus size={20} /> Add New Product
-          </button>
-        </div>
-
-        {/* Category Filters */}
-        <div className="mb-8 flex flex-wrap items-center gap-4">
-          {categories.map((cat, i) => {
-            const isActive = selectedCategory === cat;
-            return (
-              <motion.button
-                key={cat}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-2.5 rounded-2xl font-bold transition-all duration-300 flex items-center gap-2 ${isActive
-                    ? 'bg-accent-primary text-white shadow-[0_8px_20px_-6px_rgba(67,24,255,0.5)] scale-105 ring-2 ring-accent-primary ring-offset-2 ring-offset-[#f4f7fe]'
-                    : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-              >
-                {cat !== 'All' && <Tag size={16} />}
-                {cat}
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <AnimatePresence>
-            {displayedProducts.map((product, i) => (
-              <motion.div
-                key={product._id}
-                layout
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
-                className={`group relative bg-white rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 border-2 ${product.stock > 0 ? 'border-transparent hover:border-accent-primary/30' : 'border-red-100 hover:border-red-400/50'
-                  }`}
-              >
-                {/* Image Section */}
-                <div className="relative h-56 w-full bg-slate-100 overflow-hidden">
-                  {product.image ? (
-                    <img
-                      src={`http://localhost:5001${product.image}`}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                      <Box size={64} />
-                    </div>
-                  )}
-
-                  {/* Category Badge overlay */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-accent-primary shadow-lg border border-white/50">
-                    {product.category}
-                  </div>
-
-                  {/* Stock Badge */}
-                  <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20 backdrop-blur-md ${product.stock > 0 ? 'bg-emerald-500/90 text-white' : 'bg-red-500/90 text-white'
-                    }`}>
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock'}
-                  </div>
-
-                  {/* Hover Actions */}
-                  <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-                    <button
-                      onClick={(e) => handleEditClick(e, product)}
-                      className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-accent-primary hover:scale-110 transition-transform shadow-xl"
-                    >
-                      <Edit2 size={20} />
-                    </button>
-                    <button
-                      onClick={(e) => handleDeleteClick(e, product)}
-                      className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-xl"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="p-5">
-                  <div className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">ID: {product._id.slice(-6)}</div>
-                  <h3 className="text-xl font-extrabold text-slate-900 mb-2 truncate" title={product.name}>{product.name}</h3>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center gap-1 text-slate-900 font-black text-2xl">
-                      <span className="text-accent-primary text-lg">$</span>
-                      {product.price.toFixed(2)}
-                    </div>
-                    <div className="bg-slate-100 px-3 py-1.5 rounded-lg text-slate-600 font-bold text-sm flex items-center gap-1">
-                      Size: {product.size}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {displayedProducts.length === 0 && (
-            <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-400">
-              <Box size={64} className="mb-4 opacity-50" />
-              <p className="text-xl font-semibold">No products found in this category.</p>
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      <AddProductModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={refreshProducts}
-      />
-
-      <EditProductModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onSuccess={refreshProducts}
-        product={selectedProduct}
-      />
-
-      <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        loading={deleteLoading}
-      />
-    </>
+        )}
+      </div>
+    </motion.div>
   );
 };
 

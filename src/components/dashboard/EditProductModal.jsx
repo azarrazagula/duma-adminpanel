@@ -78,26 +78,26 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className="fixed inset-0 z-[150] flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]"
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-[39.5%] top-[12%] -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-dark-card border border-glass rounded-[24px] p-8 z-[120] shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="relative z-10 w-[95%] max-w-lg bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-slate-primary">Edit Product</h2>
-                <p className="text-slate-secondary text-sm">Update product details and image</p>
+                <h2 className="text-2xl font-bold text-slate-900">Edit Product</h2>
+                <p className="text-slate-500 text-sm">Update product details and image</p>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-slate-secondary transition-all">
+              <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-all">
                 <X size={24} />
               </button>
             </div>
@@ -120,13 +120,13 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
                 />
                 <label
                   htmlFor="edit-image-upload"
-                  className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-2xl cursor-pointer transition-all ${imagePreview ? 'border-accent-primary bg-accent-primary/5' : 'border-glass hover:border-accent-primary hover:bg-white/5'
+                  className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-2xl cursor-pointer transition-all ${imagePreview ? 'border-accent-primary bg-accent-primary/5' : 'border-slate-200 hover:border-accent-primary hover:bg-slate-100'
                     }`}
                 >
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
                   ) : (
-                    <div className="flex flex-col items-center text-slate-secondary group-hover:text-accent-primary transition-colors">
+                    <div className="flex flex-col items-center text-slate-500 group-hover:text-accent-primary transition-colors">
                       <Upload size={32} className="mb-2" />
                       <span className="text-sm font-medium">Click to change product image</span>
                     </div>
@@ -136,12 +136,12 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
 
               <div className="space-y-4">
                 <div className="relative">
-                  <Package className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-secondary" size={18} />
+                  <Package className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                   <input
                     type="text"
                     placeholder="Product Name"
                     required
-                    className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
@@ -149,24 +149,24 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative">
-                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-secondary" size={18} />
+                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                       type="number"
                       step="0.01"
                       placeholder="Price"
                       required
-                      className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all"
+                      className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all"
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     />
                   </div>
                   <div className="relative">
-                    <BarChart2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-secondary" size={18} />
+                    <BarChart2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                       type="number"
                       placeholder="Stock"
                       required
-                      className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all"
+                      className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all"
                       value={formData.stock}
                       onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                     />
@@ -174,10 +174,10 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
                 </div>
 
                 <div className="relative">
-                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-secondary" size={18} />
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                   <select
                     required
-                    className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all appearance-none"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all appearance-none"
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   >
@@ -188,10 +188,10 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
                 </div>
 
                 <div className="relative">
-                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-secondary" size={18} />
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                   <select
                     required
-                    className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all appearance-none"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all appearance-none"
                     value={formData.size}
                     onChange={(e) => setFormData({ ...formData, size: e.target.value })}
                   >
@@ -206,12 +206,12 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
                 </div>
 
                 <div className="relative">
-                  <FileText className="absolute left-4 top-4 text-slate-secondary" size={18} />
+                  <FileText className="absolute left-4 top-4 text-slate-500" size={18} />
                   <textarea
                     placeholder="Description"
                     required
                     rows="3"
-                    className="w-full bg-white/5 border border-glass rounded-xl py-3 pl-12 pr-4 text-slate-primary outline-none focus:border-accent-primary transition-all resize-none"
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-slate-900 outline-none focus:border-accent-primary transition-all resize-none"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
@@ -227,7 +227,7 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
               </button>
             </form>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );

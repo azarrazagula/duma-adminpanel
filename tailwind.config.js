@@ -7,22 +7,22 @@ module.exports = {
     extend: {
       colors: {
         dark: {
-          DEFAULT: '#0a0a0b',
-          card: '#151518',
-          hover: '#1c1c21',
+          DEFAULT: '#f4f7fe', // Redefined bg-dark for fast transition to light
+          card: '#ffffff',
+          hover: '#f1f5f9',
         },
         accent: {
-          primary: '#8b5cf6',
-          secondary: '#06b6d4',
-          pink: '#d946ef',
+          primary: '#4318FF',
+          secondary: '#39B8FF',
+          pink: '#E31A1A',
         },
         slate: {
-          primary: '#f8fafc',
-          secondary: '#94a3b8',
+          primary: '#1B254B',
+          secondary: '#A3AED0',
         }
       },
       backgroundImage: {
-        'accent-gradient': 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)',
+        'accent-gradient': 'linear-gradient(135deg, #4318FF 0%, #39B8FF 100%)',
       },
       fontFamily: {
         inter: ['Inter', 'sans-serif'],
@@ -31,7 +31,7 @@ module.exports = {
         '1': '1px',
       },
       borderColor: {
-        'glass': 'rgba(255, 255, 255, 0.1)',
+        'glass': '#E2E8F0', // Redefined for light theme
       }
     },
   },

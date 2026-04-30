@@ -1,36 +1,82 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
   ShoppingCart,
   Users,
-  Settings
+  Settings,
+  LogOut
 } from 'lucide-react';
+import { logoutAdmin } from '../../EndpontsLogics/authService';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const handleLogout = () => {
+    logoutAdmin();
+    window.location.reload();
+  };
+
+  const tabs = [
+    { id: 'dashboard', path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'products', path: '/products', label: 'Products', icon: Package },
+    { id: 'orders', path: '/orders', label: 'Orders', icon: ShoppingCart },
+    { id: 'customer-care', path: '/customer-care', label: 'Customer Care', icon: Users },
+    { id: 'settings', path: '/settings', label: 'Settings', icon: Settings },
+  ];
+
   return (
-    <aside className="w-[260px] bg-dark-card border-r border-glass h-screen fixed flex flex-col p-6 z-[100] hidden md:flex">
-      <div className="text-2xl font-extrabold bg-accent-gradient bg-clip-text text-transparent mb-10 tracking-tight">
-        DUMA ADMIN
-      </div>
-      <nav className="flex flex-col gap-2">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-accent-primary/10 text-accent-primary cursor-pointer transition-all">
-          <LayoutDashboard size={20} /> Dashboard
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[150] md:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+
+      <aside className={`w-[260px] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-r border-slate-200 h-screen fixed flex flex-col p-6 z-[200] transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="flex items-center justify-between mb-10">
+          <div className="text-2xl font-extrabold bg-accent-gradient bg-clip-text text-transparent tracking-tight">
+            DUMA ADMIN
+          </div>
+          <button onClick={toggleSidebar} className="md:hidden p-2 text-slate-500 hover:text-slate-900">
+            <Settings size={24} />
+          </button>
         </div>
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
-          <Package size={20} /> Products
+        <nav className="flex flex-col gap-2 flex-1">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <NavLink
+                key={tab.id}
+                to={tab.path}
+                onClick={() => {
+                  if (window.innerWidth < 768) toggleSidebar();
+                }}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${
+                    isActive
+                      ? 'bg-accent-gradient text-white shadow-lg shadow-accent-primary/30 font-semibold'
+                      : 'text-slate-500 hover:bg-accent-primary/5 hover:text-accent-primary font-medium'
+                  }`
+                }
+              >
+                <Icon size={20} /> {tab.label}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto pt-6 border-t border-slate-200">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all w-full text-red-500/70 hover:bg-red-500/10 hover:text-red-500"
+          >
+            <LogOut size={20} /> Logout
+          </button>
         </div>
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
-          <ShoppingCart size={20} /> Orders
-        </div>
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
-          <Users size={20} /> Customer Care
-        </div>
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-secondary hover:bg-accent-primary/5 hover:text-accent-primary cursor-pointer transition-all">
-          <Settings size={20} /> Settings
-        </div>
-      </nav>
-    </aside>
+      </aside>
+    </>
   );
 };
 

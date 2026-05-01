@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
-  Tag,
   ShoppingCart,
   Users,
   BarChart3,
@@ -21,7 +20,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const tabs = [
     { id: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', path: '/products', label: 'Products', icon: Package },
-    { id: 'categories', path: '/categories', label: 'Categories', icon: Tag },
     { id: 'orders', path: '/orders', label: 'Orders', icon: ShoppingCart },
     { id: 'customers', path: '/customers', label: 'Customers', icon: Users },
     { id: 'analytics', path: '/analytics', label: 'Analytics', icon: BarChart3 },

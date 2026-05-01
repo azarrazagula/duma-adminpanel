@@ -4,7 +4,6 @@ import Sidebar from "./components/layout/Sidebar";
 import Header from "./components/layout/Header";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
-import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
 import Analytics from "./pages/Analytics";
@@ -69,8 +68,6 @@ function App() {
                   refreshProducts={refreshProducts}
                 />
               } />
-
-              <Route path="/categories" element={<Categories products={products} />} />
 
               <Route path="/orders" element={<Orders />} />
 

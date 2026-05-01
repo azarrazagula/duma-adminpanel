@@ -36,7 +36,7 @@ const ProductTable = ({ products, loading, error, onEdit, onDelete }) => {
                       <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
                         {product.image ? (
                           <img
-                            src={`http://localhost:5001${product.image}`}
+                            src={`http://${window.location.hostname}:5001${product.image}`}
                             alt={product.name}
                             className="w-full h-full object-cover"
                           />

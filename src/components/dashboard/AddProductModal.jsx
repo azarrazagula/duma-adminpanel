@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Package, DollarSign, Tag, FileText, BarChart2, Upload } from 'lucide-react';
 import { createProduct } from '../../EndpontsLogics/productService';
+import { getAllCategories } from '../../EndpontsLogics/categoryService';
 
 const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -16,6 +18,20 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchCategories = async () => {
+        try {
+          const data = await getAllCategories();
+          setCategories(data);
+        } catch (err) {
+          console.error('Failed to fetch categories:', err);
+        }
+      };
+      fetchCategories();
+    }
+  }, [isOpen]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -165,8 +181,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess }) => {
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   >
                     <option value="" disabled>Select Category</option>
-                    <option value="T-Shirt">T-Shirt</option>
-                    <option value="Jeans">Jeans</option>
+                    {categories.map(cat => (
+                      <option key={cat._id} value={cat.name}>{cat.name}</option>
+                    ))}
                   </select>
                 </div>
                 

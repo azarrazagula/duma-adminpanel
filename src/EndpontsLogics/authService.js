@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001/api/admin';
+const API_URL = `http://${window.location.hostname}:5001/api/admin`;
 
 export const loginAdmin = async (email, password) => {
   try {

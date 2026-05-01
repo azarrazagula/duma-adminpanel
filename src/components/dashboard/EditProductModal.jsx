@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Package, DollarSign, Tag, FileText, BarChart2, Upload } from 'lucide-react';
 import { updateProduct } from '../../EndpontsLogics/productService';
+import { getAllCategories } from '../../EndpontsLogics/categoryService';
 
 const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -18,6 +20,20 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (isOpen) {
+      const fetchCategories = async () => {
+        try {
+          const data = await getAllCategories();
+          setCategories(data);
+        } catch (err) {
+          console.error('Failed to fetch categories:', err);
+        }
+      };
+      fetchCategories();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (product) {
       setFormData({
         name: product.name || '',
@@ -29,7 +45,7 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
       });
       // Set initial preview to the current product image if it exists
       if (product.image) {
-        setImagePreview(`http://localhost:5001${product.image}`);
+        setImagePreview(`http://${window.location.hostname}:5001${product.image}`);
       } else {
         setImagePreview(null);
       }
@@ -182,8 +198,9 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   >
                     <option value="" disabled>Select Category</option>
-                    <option value="T-Shirt">T-Shirt</option>
-                    <option value="Jeans">Jeans</option>
+                    {categories.map(cat => (
+                      <option key={cat._id} value={cat.name}>{cat.name}</option>
+                    ))}
                   </select>
                 </div>
 

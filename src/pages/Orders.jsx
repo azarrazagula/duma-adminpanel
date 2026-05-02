@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Clock, Truck, CheckCircle, XCircle, ChevronDown, Package, Loader2 } from 'lucide-react';
-import { getAllOrders, updateOrderStatus } from '../EndpontsLogics/orderService';
+import { getAllOrders, updateOrderStatus, getPaymentDetails } from '../EndpontsLogics/orderService';
+import { CreditCard, Mail, Phone, Calendar, Info } from 'lucide-react';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [expandedOrder, setExpandedOrder] = useState(null);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
+  const [fetchingPayment, setFetchingPayment] = useState(false);
 
   const statusFilters = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
@@ -33,6 +37,26 @@ const Orders = () => {
       fetchOrders(); // Refresh orders after update
     } catch (err) {
       alert('Failed to update status: ' + err.message);
+    }
+  };
+
+  const handleViewPayment = async (order) => {
+    setPaymentData({ 
+      id: order.razorpayPaymentId || 'pay_SkPs2fD4HGEjIC', 
+      amount: order.totalPrice * 100, // INR to Paise
+      status: 'Loading...', 
+      method: '...' 
+    });
+    setPaymentModalOpen(true);
+    setFetchingPayment(true);
+    
+    try {
+      const data = await getPaymentDetails(order.razorpayPaymentId || 'pay_SkPs2fD4HGEjIC');
+      setPaymentData(data);
+    } catch (err) {
+      console.error('Failed to fetch payment details:', err);
+    } finally {
+      setFetchingPayment(false);
     }
   };
 
@@ -159,7 +183,17 @@ const Orders = () => {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</div>
-                      <div className="font-semibold text-slate-900">{order.paymentMethod}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-900">{order.paymentMethod}</span>
+                        {order.paymentMethod === 'Razorpay' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleViewPayment(order); }}
+                            className="text-accent-primary hover:text-accent-secondary flex items-center gap-1 text-xs font-bold transition-colors"
+                          >
+                            <Info size={14} /> View Details
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Address</div>
@@ -219,8 +253,179 @@ const Orders = () => {
             <p className="text-xl font-semibold">No orders found with this status.</p>
           </div>
         )}
-      </div>
-    </motion.div>
+      {/* Payment Details Modal */}
+      {paymentModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => setPaymentModalOpen(false)}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden"
+          >
+            {/* Modal Header */}
+            <div className="p-6 bg-accent-gradient text-white flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-extrabold flex items-center gap-2">
+                  <CreditCard size={24} /> Payment Details
+                </h3>
+                <p className="text-white/80 text-sm font-medium mt-1">Transaction information from Razorpay</p>
+              </div>
+              <button
+                onClick={() => setPaymentModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
+                <XCircle size={24} />
+              </button>
+            </div>
+
+            <div className="p-6 max-h-[70vh] overflow-y-auto">
+              {paymentData ? (
+                <div className="space-y-6">
+                  {/* Status & Amount Banner */}
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex items-center justify-between relative overflow-hidden">
+                    {fetchingPayment && (
+                      <motion.div 
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100%' }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                        className="absolute top-0 left-0 w-full h-1 bg-accent-primary/20"
+                      />
+                    )}
+                    <div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Status</div>
+                      <div className={`flex items-center gap-1.5 font-extrabold ${
+                        paymentData.status === 'captured' ? 'text-emerald-600' : 
+                        paymentData.status === 'Loading...' ? 'text-slate-400' : 'text-amber-600'
+                      }`}>
+                        {paymentData.status === 'captured' ? <CheckCircle size={18} /> : <Clock size={18} />}
+                        {paymentData.status.toUpperCase()}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Amount Paid</div>
+                      <div className="text-2xl font-black text-slate-900">₹{(paymentData.amount / 100).toLocaleString()}</div>
+                    </div>
+                  </div>
+
+                  {/* Payment Details Grid */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                        <Info size={14} /> Payment ID
+                      </div>
+                      <div className="font-bold text-slate-900 break-all bg-slate-50 p-2 rounded-lg border border-slate-100 text-sm">
+                        {paymentData.id}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                        <CreditCard size={14} /> Method
+                      </div>
+                      <div className="font-bold text-slate-900 capitalize flex items-center gap-2">
+                        {fetchingPayment ? (
+                          <div className="w-20 h-4 bg-slate-100 animate-pulse rounded" />
+                        ) : (
+                          <>
+                            {paymentData.method === 'card' && <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md text-[10px]">{paymentData.card?.network}</span>}
+                            {paymentData.method}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Customer Info */}
+                  <div className="space-y-3">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Customer Details</div>
+                    <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                          <Mail size={16} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase">Email</div>
+                          {fetchingPayment ? (
+                            <div className="w-full h-4 bg-slate-100 animate-pulse rounded mt-1" />
+                          ) : (
+                            <div className="font-bold text-slate-900 text-sm">{paymentData.email || '...'}</div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                          <Phone size={16} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase">Contact</div>
+                          {fetchingPayment ? (
+                            <div className="w-24 h-4 bg-slate-100 animate-pulse rounded mt-1" />
+                          ) : (
+                            <div className="font-bold text-slate-900 text-sm">{paymentData.contact || '...'}</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Info */}
+                  {fetchingPayment ? (
+                    <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 border-dashed flex flex-col items-center justify-center">
+                       <Loader2 className="animate-spin text-slate-300 mb-2" size={24} />
+                       <span className="text-xs font-bold text-slate-400">Loading Secure Details...</span>
+                    </div>
+                  ) : paymentData.card && (
+                    <div className="bg-slate-900 rounded-2xl p-5 text-white shadow-xl">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="text-[10px] font-bold text-white/40 uppercase tracking-[2px]">Card Details</div>
+                        <CreditCard size={24} className="text-white/20" />
+                      </div>
+                      <div className="text-xl font-medium tracking-[4px] mb-4">
+                        **** **** **** {paymentData.card.last4}
+                      </div>
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <div className="text-[8px] font-bold text-white/40 uppercase mb-1">Network</div>
+                          <div className="font-bold text-sm">{paymentData.card.network}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-[8px] font-bold text-white/40 uppercase mb-1">Type</div>
+                          <div className="font-bold text-sm capitalize">{paymentData.card.type}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {!fetchingPayment && (
+                    <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                      <Calendar size={14} />
+                      Paid on {new Date((paymentData.created_at || Date.now() / 1000) * 1000).toLocaleString()}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-slate-500">No data available</div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setPaymentModalOpen(false)}
+                className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-slate-600 font-bold hover:bg-slate-100 transition-all shadow-sm"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </div>
+  </motion.div>
   );
 };
 

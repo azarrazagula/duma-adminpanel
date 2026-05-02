@@ -3,8 +3,14 @@ import axios from "axios";
 const API_URL = `http://${window.location.hostname}:5001/api/admin`;
 
 export const getAllCategories = async () => {
+  const admin = JSON.parse(localStorage.getItem('adminUser'));
+  const config = {
+    headers: {
+      Authorization: `Bearer ${admin?.token}`,
+    },
+  };
   try {
-    const response = await axios.get(`${API_URL}/allcategories`);
+    const response = await axios.get(`${API_URL}/allcategories`, config);
     return response.data;
   } catch (error) {
     throw new Error(
@@ -14,12 +20,14 @@ export const getAllCategories = async () => {
 };
 
 export const createCategory = async (categoryData) => {
+  const admin = JSON.parse(localStorage.getItem('adminUser'));
   try {
-    // categoryData can be a name string or FormData if including image
-    const config =
-      categoryData instanceof FormData
-        ? { headers: { "Content-Type": "multipart/form-data" } }
-        : {};
+    const config = {
+      headers: {
+        Authorization: `Bearer ${admin?.token}`,
+        ...(categoryData instanceof FormData ? { "Content-Type": "multipart/form-data" } : {}),
+      },
+    };
     const response = await axios.post(
       `${API_URL}/categories`,
       categoryData,
@@ -34,11 +42,14 @@ export const createCategory = async (categoryData) => {
 };
 
 export const updateCategory = async (id, categoryData) => {
+  const admin = JSON.parse(localStorage.getItem('adminUser'));
   try {
-    const config =
-      categoryData instanceof FormData
-        ? { headers: { "Content-Type": "multipart/form-data" } }
-        : {};
+    const config = {
+      headers: {
+        Authorization: `Bearer ${admin?.token}`,
+        ...(categoryData instanceof FormData ? { "Content-Type": "multipart/form-data" } : {}),
+      },
+    };
     const response = await axios.put(
       `${API_URL}/categories/${id}`,
       categoryData,
@@ -53,8 +64,14 @@ export const updateCategory = async (id, categoryData) => {
 };
 
 export const deleteCategory = async (id) => {
+  const admin = JSON.parse(localStorage.getItem('adminUser'));
+  const config = {
+    headers: {
+      Authorization: `Bearer ${admin?.token}`,
+    },
+  };
   try {
-    const response = await axios.delete(`${API_URL}/categories/${id}`);
+    const response = await axios.delete(`${API_URL}/categories/${id}`, config);
     return response.data;
   } catch (error) {
     throw new Error(

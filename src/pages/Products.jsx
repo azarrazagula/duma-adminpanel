@@ -6,6 +6,7 @@ import EditProductModal from '../components/dashboard/EditProductModal';
 import DeleteConfirmationModal from '../components/dashboard/DeleteConfirmationModal';
 import { deleteProduct } from '../EndpontsLogics/productService';
 import { getAllCategories, createCategory, deleteCategory, updateCategory } from '../EndpontsLogics/categoryService';
+import { IMAGE_BASE_URL } from '../constants/config';
 
 const Products = ({ products, filteredProducts, loading, error, refreshProducts }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -130,7 +131,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
     e.stopPropagation();
     setEditingCategory(cat);
     setCatName(cat.name);
-    setCatImagePreview(cat.image ? `http://${window.location.hostname}:5001${cat.image}` : null);
+    setCatImagePreview(cat.image ? `${IMAGE_BASE_URL}${cat.image}` : null);
     setShowCatModal(true);
   };
 
@@ -216,7 +217,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
                     <div className="flex items-center -space-x-1.5 md:-space-x-2">
                       {catProducts.slice(0, 4).map((p, idx) => (
                         <div key={idx} className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
-                          <img src={`http://${window.location.hostname}:5001${p.image}`} alt="" className="w-full h-full object-cover" />
+                          <img src={`${IMAGE_BASE_URL}${p.image}`} alt="" className="w-full h-full object-cover" />
                         </div>
                       ))}
                       {catProducts.length > 4 && (
@@ -255,7 +256,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
               >
                 <div className="relative h-40 md:h-56 w-full bg-slate-50 overflow-hidden">
                   {product.image ? (
-                    <img src={`http://${window.location.hostname}:5001${product.image}`} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <img src={`${IMAGE_BASE_URL}${product.image}`} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-200"><Box size={32} className="md:w-12 md:h-12" /></div>
                   )}

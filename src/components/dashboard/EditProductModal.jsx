@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Package, DollarSign, Tag, FileText, BarChart2, Upload } from 'lucide-react';
 import { updateProduct } from '../../EndpontsLogics/productService';
 import { getAllCategories } from '../../EndpontsLogics/categoryService';
+import { IMAGE_BASE_URL } from '../../constants/config';
 
 const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
   const [categories, setCategories] = useState([]);
@@ -45,7 +46,7 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
       });
       // Set initial preview to the current product image if it exists
       if (product.image) {
-        setImagePreview(`http://${window.location.hostname}:5001${product.image}`);
+        setImagePreview(`${IMAGE_BASE_URL}${product.image}`);
       } else {
         setImagePreview(null);
       }

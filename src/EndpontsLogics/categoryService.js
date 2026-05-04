@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = `http://${window.location.hostname}:5001/api/admin`;
+import { API_BASE_URL as API_URL } from "../constants/config";
 
 export const getAllCategories = async () => {
   const admin = JSON.parse(localStorage.getItem('adminUser'));

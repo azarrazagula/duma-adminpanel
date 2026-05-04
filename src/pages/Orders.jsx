@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, Clock, Truck, CheckCircle, XCircle, ChevronDown, Package, Loader2 } from 'lucide-react';
 import { getAllOrders, updateOrderStatus, getPaymentDetails } from '../EndpontsLogics/orderService';
 import { CreditCard, Mail, Phone, Calendar, Info } from 'lucide-react';
+import { IMAGE_BASE_URL } from '../constants/config';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -210,7 +211,7 @@ const Orders = () => {
                       <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100">
                         <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden">
                           {item.image ? (
-                            <img src={`http://${window.location.hostname}:5001${item.image}`} alt={item.name} className="w-full h-full object-cover" />
+                            <img src={`${IMAGE_BASE_URL}${item.image}`} alt={item.name} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400"><Package size={20} /></div>
                           )}

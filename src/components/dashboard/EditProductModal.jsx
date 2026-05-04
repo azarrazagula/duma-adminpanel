@@ -46,7 +46,7 @@ const EditProductModal = ({ isOpen, onClose, onSuccess, product }) => {
       });
       // Set initial preview to the current product image if it exists
       if (product.image) {
-        setImagePreview(`${IMAGE_BASE_URL}${product.image}`);
+        setImagePreview(product.image.startsWith('http') ? product.image : `${IMAGE_BASE_URL}${product.image}`);
       } else {
         setImagePreview(null);
       }

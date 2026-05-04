@@ -217,7 +217,11 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
                     <div className="flex items-center -space-x-1.5 md:-space-x-2">
                       {catProducts.slice(0, 4).map((p, idx) => (
                         <div key={idx} className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
-                          <img src={`${IMAGE_BASE_URL}${p.image}`} alt="" className="w-full h-full object-cover" />
+                          <img 
+                            src={p.image?.startsWith('http') ? p.image : `${IMAGE_BASE_URL}${p.image}`} 
+                            alt="" 
+                            className="w-full h-full object-cover" 
+                          />
                         </div>
                       ))}
                       {catProducts.length > 4 && (
@@ -254,9 +258,12 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
                 className={`group relative bg-white rounded-[16px] md:rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border-2 ${product.stock > 0 ? 'border-slate-100 hover:border-slate-200' : 'border-red-100'
                   }`}
               >
-                <div className="relative h-40 md:h-56 w-full bg-slate-50 overflow-hidden">
                   {product.image ? (
-                    <img src={`${IMAGE_BASE_URL}${product.image}`} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <img 
+                      src={product.image.startsWith('http') ? product.image : `${IMAGE_BASE_URL}${product.image}`} 
+                      alt={product.name} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-200"><Box size={32} className="md:w-12 md:h-12" /></div>
                   )}

@@ -258,6 +258,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
                 className={`group relative bg-white rounded-[16px] md:rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border-2 ${product.stock > 0 ? 'border-slate-100 hover:border-slate-200' : 'border-red-100'
                   }`}
               >
+                <div className="relative h-40 md:h-56 w-full bg-slate-50 overflow-hidden">
                   {product.image ? (
                     <img 
                       src={product.image.startsWith('http') ? product.image : `${IMAGE_BASE_URL}${product.image}`} 

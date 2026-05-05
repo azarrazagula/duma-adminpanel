@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { fetchAllProducts } from '../EndpontsLogics/productService';
 import { getAllOrders } from '../EndpontsLogics/orderService';
 import { getAllCategories } from '../EndpontsLogics/categoryService';
@@ -14,7 +14,7 @@ export const AdminProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     try {
       // Only show global loading if we don't have data yet
       if (products.length === 0 && orders.length === 0) {
@@ -38,12 +38,12 @@ export const AdminProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [products.length, orders.length]);
 
   // Initial load
   useEffect(() => {
     refreshData();
-  }, []);
+  }, [refreshData]);
 
   const value = {
     products,

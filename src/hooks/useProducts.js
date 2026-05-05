@@ -1,28 +1,9 @@
-import { useState, useEffect } from "react";
-import { fetchAllProducts } from "../EndpontsLogics/productService";
+import { useState } from "react";
+import { useAdmin } from "../context/AdminContext";
 
 export const useProducts = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { products, loading, error, refreshData } = useAdmin();
   const [searchTerm, setSearchTerm] = useState("");
-
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchAllProducts();
-      setProducts(data);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
 
   const filteredProducts = products.filter(
     (p) =>
@@ -37,6 +18,6 @@ export const useProducts = () => {
     error,
     searchTerm,
     setSearchTerm,
-    refreshProducts: loadProducts,
+    refreshProducts: refreshData,
   };
 };

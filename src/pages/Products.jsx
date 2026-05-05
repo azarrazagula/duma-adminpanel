@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Tag, Box, Loader2, Camera, X } from 'lucide-react';
 import AddProductModal from '../components/dashboard/AddProductModal';
 import EditProductModal from '../components/dashboard/EditProductModal';
 import DeleteConfirmationModal from '../components/dashboard/DeleteConfirmationModal';
 import { deleteProduct } from '../EndpontsLogics/productService';
-import { getAllCategories, createCategory, deleteCategory, updateCategory } from '../EndpontsLogics/categoryService';
+import { createCategory, deleteCategory, updateCategory } from '../EndpontsLogics/categoryService';
 import { IMAGE_BASE_URL } from '../constants/config';
 
+import { useAdmin } from '../context/AdminContext';
+
 const Products = ({ products, filteredProducts, loading, error, refreshProducts }) => {
+  const { categories, refreshData } = useAdmin();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -17,26 +20,12 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Category States
-  const [categories, setCategories] = useState([]);
   const [showCatModal, setShowCatModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [catName, setCatName] = useState('');
   const [catImage, setCatImage] = useState(null);
   const [catImagePreview, setCatImagePreview] = useState(null);
   const [isCatSubmitting, setIsCatSubmitting] = useState(false);
-
-  const fetchCategories = async () => {
-    try {
-      const data = await getAllCategories();
-      setCategories(data);
-    } catch (err) {
-      console.error('Failed to fetch categories:', err);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const displayedProducts = filteredProducts.filter(product => {
     if (selectedCategory === 'All') return true;
@@ -102,7 +91,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
       setCatName('');
       setCatImage(null);
       setCatImagePreview(null);
-      fetchCategories();
+      refreshData();
       refreshProducts();
     } catch (err) {
       alert(err.message);
@@ -119,7 +108,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
         if (selectedCategory === categories.find(c => c._id === id)?.name) {
           setSelectedCategory('All');
         }
-        fetchCategories();
+        refreshData();
         refreshProducts();
       } catch (err) {
         alert(err.message);

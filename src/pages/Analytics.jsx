@@ -1,25 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, DollarSign, Package, ArrowUpRight, Loader2, Calendar } from 'lucide-react';
-import { getAllOrders } from '../EndpontsLogics/orderService';
+import { useAdmin } from '../context/AdminContext';
 
 const Analytics = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAllOrders();
-        setOrders(data);
-      } catch (err) {
-        console.error('Failed to fetch analytics data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const { orders, loading } = useAdmin();
 
   // Calculate monthly sales for the chart
   const getMonthlySales = () => {

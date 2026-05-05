@@ -1,31 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Package, ShoppingCart, Users, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Clock, Loader2 } from 'lucide-react';
-import { getAllOrders } from '../EndpontsLogics/orderService';
-import { fetchAllProducts } from '../EndpontsLogics/productService';
+import { useAdmin } from '../context/AdminContext';
 
 const Dashboard = () => {
-  const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productsData, ordersData] = await Promise.all([
-          fetchAllProducts(),
-          getAllOrders()
-        ]);
-        setProducts(productsData);
-        setOrders(ordersData);
-      } catch (err) {
-        console.error('Failed to fetch dashboard data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const { products, orders, loading } = useAdmin();
 
   const totalRevenue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
   const totalCustomers = [...new Set(orders.map(o => o.user?._id))].length;

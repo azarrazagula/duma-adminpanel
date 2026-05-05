@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Search, Mail, Phone, MapPin, ShoppingBag, Ban, Eye, MoreVertical, Loader2, ShieldCheck, X, DollarSign, Trash2 } from 'lucide-react';
-import { getAllCustomers, toggleBlockCustomer, getCustomerDetails, deleteCustomer } from '../EndpontsLogics/customerService';
+import { toggleBlockCustomer, getCustomerDetails, deleteCustomer } from '../EndpontsLogics/customerService';
+import { useAdmin } from '../context/AdminContext';
 
 const Customers = () => {
+  const { customers, loading, refreshData } = useAdmin();
   const [searchTerm, setSearchTerm] = useState('');
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -17,26 +17,10 @@ const Customers = () => {
   const [customerToDelete, setCustomerToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const fetchCustomers = async () => {
-    try {
-      setLoading(true);
-      const data = await getAllCustomers();
-      setCustomers(data);
-    } catch (err) {
-      console.error('Failed to fetch customers:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
   const handleToggleBlock = async (id) => {
     try {
       await toggleBlockCustomer(id);
-      fetchCustomers();
+      refreshData();
       setOpenMenuId(null);
     } catch (err) {
       alert(err.message);
@@ -54,7 +38,7 @@ const Customers = () => {
     try {
       setDeleteLoading(true);
       await deleteCustomer(customerToDelete._id);
-      fetchCustomers();
+      refreshData();
       setShowDeleteConfirm(false);
       setCustomerToDelete(null);
     } catch (err) {

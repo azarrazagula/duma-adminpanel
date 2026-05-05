@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Clock, Truck, CheckCircle, XCircle, ChevronDown, Package, Loader2 } from 'lucide-react';
-import { getAllOrders, updateOrderStatus, getPaymentDetails } from '../EndpontsLogics/orderService';
+import { updateOrderStatus, getPaymentDetails } from '../EndpontsLogics/orderService';
 import { CreditCard, Mail, Phone, Calendar, Info } from 'lucide-react';
 import { IMAGE_BASE_URL } from '../constants/config';
 
+import { useAdmin } from '../context/AdminContext';
+
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { orders, loading, refreshData } = useAdmin();
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [expandedOrder, setExpandedOrder] = useState(null);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
@@ -16,26 +17,10 @@ const Orders = () => {
 
   const statusFilters = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const data = await getAllOrders();
-      setOrders(data);
-    } catch (err) {
-      console.error('Failed to fetch orders:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const handleStatusChange = async (id, newStatus) => {
     try {
       await updateOrderStatus(id, newStatus);
-      fetchOrders(); // Refresh orders after update
+      refreshData(); // Refresh orders after update via context
     } catch (err) {
       alert('Failed to update status: ' + err.message);
     }

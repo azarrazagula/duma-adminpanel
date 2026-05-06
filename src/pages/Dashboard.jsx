@@ -13,10 +13,10 @@ const Dashboard = () => {
     .reduce((acc, o) => acc + o.totalPrice, 0);
 
   const statusColors = {
-    Delivered: 'bg-emerald-500/10 text-emerald-600',
-    Shipped: 'bg-blue-500/10 text-blue-600',
-    Pending: 'bg-amber-500/10 text-amber-600',
-    Cancelled: 'bg-red-500/10 text-red-600',
+    Delivered: 'bg-emerald-100 text-emerald-800',
+    Shipped: 'bg-blue-100 text-blue-800',
+    Pending: 'bg-amber-100 text-amber-800',
+    Cancelled: 'bg-red-100 text-red-800',
   };
 
   const stats = [
@@ -30,7 +30,7 @@ const Dashboard = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-500 font-bold">Loading dashboard data...</p>
+        <p className="text-slate-600 font-bold">Loading dashboard data...</p>
       </div>
     );
   }
@@ -45,7 +45,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-[24px] md:text-[32px] font-extrabold mb-1 md:mb-2 text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 text-sm md:text-base font-medium">Welcome back! Here's your business snapshot</p>
+        <p className="text-slate-600 text-sm md:text-base font-medium">Welcome back! Here's your business snapshot</p>
       </div>
 
       {/* Stat Cards */}
@@ -96,16 +96,16 @@ const Dashboard = () => {
         >
           <div className="p-6 border-b border-slate-100">
             <h2 className="text-xl font-bold text-slate-900">Recent Orders</h2>
-            <p className="text-sm text-slate-500 mt-1">Latest transactions from your store</p>
+            <p className="text-sm text-slate-600 mt-1">Latest transactions from your store</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[500px]">
               <thead>
                 <tr className="bg-indigo-50/50 border-b border-indigo-100">
-                  <th className="text-left p-4 pl-6 text-indigo-900/60 font-bold text-xs uppercase tracking-wider">Order ID</th>
-                  <th className="text-left p-4 text-indigo-900/60 font-bold text-xs uppercase tracking-wider">Customer</th>
-                  <th className="text-left p-4 text-indigo-900/60 font-bold text-xs uppercase tracking-wider">Amount</th>
-                  <th className="text-left p-4 pr-6 text-indigo-900/60 font-bold text-xs uppercase tracking-wider">Status</th>
+                  <th className="text-left p-4 pl-6 text-indigo-900/80 font-bold text-xs uppercase tracking-wider">Order ID</th>
+                  <th className="text-left p-4 text-indigo-900/80 font-bold text-xs uppercase tracking-wider">Customer</th>
+                  <th className="text-left p-4 text-indigo-900/80 font-bold text-xs uppercase tracking-wider">Amount</th>
+                  <th className="text-left p-4 pr-6 text-indigo-900/80 font-bold text-xs uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -120,7 +120,7 @@ const Dashboard = () => {
                     <td className="p-4 pl-6 border-b border-slate-100 font-bold text-accent-primary text-sm">#{order._id.slice(-6).toUpperCase()}</td>
                     <td className="p-4 border-b border-slate-100">
                       <div className="font-semibold text-slate-900 text-sm">{order.user?.name}</div>
-                      <div className="text-xs text-slate-400">{order.orderItems[0]?.name} {order.orderItems.length > 1 ? `+${order.orderItems.length - 1} more` : ''}</div>
+                      <div className="text-xs text-slate-500">{order.orderItems[0]?.name} {order.orderItems.length > 1 ? `+${order.orderItems.length - 1} more` : ''}</div>
                     </td>
                     <td className="p-4 border-b border-slate-100 font-bold text-slate-900">${order.totalPrice.toFixed(2)}</td>
                     <td className="p-4 pr-6 border-b border-slate-100">
@@ -149,7 +149,7 @@ const Dashboard = () => {
                 <div className="p-2.5 bg-violet-500 rounded-xl text-white"><Package size={20} /></div>
                 <div>
                   <div className="text-2xl font-extrabold text-slate-900">{products.length}</div>
-                  <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Total Products</div>
+                  <div className="text-xs text-slate-600 font-semibold uppercase tracking-wider">Total Products</div>
                 </div>
               </div>
             </div>
@@ -158,7 +158,7 @@ const Dashboard = () => {
                 <div className="p-2.5 bg-cyan-500 rounded-xl text-white"><ShoppingCart size={20} /></div>
                 <div>
                   <div className="text-2xl font-extrabold text-slate-900">{[...new Set(products.map(p => p.category))].length}</div>
-                  <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Categories</div>
+                  <div className="text-xs text-slate-600 font-semibold uppercase tracking-wider">Categories</div>
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ const Dashboard = () => {
                 <div className="p-2.5 bg-red-500 rounded-xl text-white"><Package size={20} /></div>
                 <div>
                   <div className="text-2xl font-extrabold text-slate-900">{products.filter(p => p.stock === 0).length}</div>
-                  <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Out of Stock</div>
+                  <div className="text-xs text-slate-600 font-semibold uppercase tracking-wider">Out of Stock</div>
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@ const Dashboard = () => {
                 <div className="p-2.5 bg-amber-500 rounded-xl text-white"><Clock size={20} /></div>
                 <div>
                   <div className="text-2xl font-extrabold text-slate-900">{orders.filter(o => o.status === 'Pending').length}</div>
-                  <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Pending Orders</div>
+                  <div className="text-xs text-slate-600 font-semibold uppercase tracking-wider">Pending Orders</div>
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ const Header = ({ searchTerm, setSearchTerm, toggleSidebar }) => {
       <div className="flex items-center gap-4">
         <button 
           onClick={toggleSidebar}
+          aria-label="Toggle Menu"
           className="p-2 md:hidden text-slate-500 hover:text-slate-900 transition-all"
         >
           <Menu size={24} />
@@ -26,7 +27,7 @@ const Header = ({ searchTerm, setSearchTerm, toggleSidebar }) => {
         </div>
       </div>
       <div className="flex items-center gap-3 md:gap-6">
-        <button className="p-2 rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all">
+        <button aria-label="Notifications" className="p-2 rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all">
           <Bell size={20} />
         </button>
         <div className="flex items-center gap-3">

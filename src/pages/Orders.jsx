@@ -49,10 +49,10 @@ const Orders = () => {
   const filteredOrders = selectedStatus === 'All' ? orders : orders.filter(o => o.status === selectedStatus);
 
   const statusConfig = {
-    Pending: { color: 'bg-amber-500/10 text-amber-600 border-amber-200', icon: <Clock size={16} />, gradient: 'from-amber-400 to-orange-500' },
-    Shipped: { color: 'bg-blue-500/10 text-blue-600 border-blue-200', icon: <Truck size={16} />, gradient: 'from-blue-400 to-indigo-500' },
-    Delivered: { color: 'bg-emerald-500/10 text-emerald-600 border-emerald-200', icon: <CheckCircle size={16} />, gradient: 'from-emerald-400 to-green-500' },
-    Cancelled: { color: 'bg-red-500/10 text-red-600 border-red-200', icon: <XCircle size={16} />, gradient: 'from-red-400 to-rose-500' },
+    Pending: { color: 'bg-amber-100 text-amber-800 border-amber-300', icon: <Clock size={16} />, gradient: 'from-amber-400 to-orange-500' },
+    Shipped: { color: 'bg-blue-100 text-blue-800 border-blue-300', icon: <Truck size={16} />, gradient: 'from-blue-400 to-indigo-500' },
+    Delivered: { color: 'bg-emerald-100 text-emerald-800 border-emerald-300', icon: <CheckCircle size={16} />, gradient: 'from-emerald-400 to-green-500' },
+    Cancelled: { color: 'bg-red-100 text-red-800 border-red-300', icon: <XCircle size={16} />, gradient: 'from-red-400 to-rose-500' },
   };
 
   const statusCounts = {
@@ -67,7 +67,7 @@ const Orders = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-500 font-bold">Loading orders...</p>
+        <p className="text-slate-600 font-bold">Loading orders...</p>
       </div>
     );
   }
@@ -82,7 +82,7 @@ const Orders = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-[24px] md:text-[32px] font-extrabold mb-1 md:mb-2 text-slate-900">Order Management</h1>
-        <p className="text-slate-500 text-sm md:text-base font-medium">Track and manage all customer orders from your store</p>
+        <p className="text-slate-600 text-sm md:text-base font-medium">Track and manage all customer orders from your store</p>
       </div>
 
       {/* Status Filter Cards */}
@@ -103,7 +103,7 @@ const Orders = () => {
               }`}
             >
               <div className={`text-3xl font-extrabold ${isActive ? 'text-white' : 'text-slate-900'}`}>{statusCounts[status]}</div>
-              <div className={`text-sm font-bold mt-1 ${isActive ? 'text-white/90' : 'text-slate-500'}`}>{status}</div>
+              <div className={`text-sm font-bold mt-1 ${isActive ? 'text-white/90' : 'text-slate-600'}`}>{status}</div>
             </motion.button>
           );
         })}
@@ -138,14 +138,14 @@ const Orders = () => {
                         {config.icon} {order.status}
                       </span>
                     </div>
-                    <div className="text-sm text-slate-500 mt-1">{order.user?.name || 'Guest'} • {new Date(order.createdAt).toLocaleDateString()}</div>
+                    <div className="text-sm text-slate-600 mt-1">{order.user?.name || 'Guest'} • {new Date(order.createdAt).toLocaleDateString()}</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-6">
                   <div className="text-right">
                     <div className="text-xl font-extrabold text-slate-900">${order.totalPrice.toFixed(2)}</div>
-                    <div className="text-xs text-slate-400 font-semibold">{order.orderItems.length} item{order.orderItems.length > 1 ? 's' : ''}</div>
+                    <div className="text-xs text-slate-600 font-semibold">{order.orderItems.length} item{order.orderItems.length > 1 ? 's' : ''}</div>
                   </div>
                   <ChevronDown size={20} className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                 </div>
@@ -160,15 +160,15 @@ const Orders = () => {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
                     <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Customer</div>
+                      <div className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Customer</div>
                       <div className="font-semibold text-slate-900">{order.user?.name}</div>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email</div>
+                      <div className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Email</div>
                       <div className="font-semibold text-slate-900">{order.user?.email}</div>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</div>
+                      <div className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Payment Method</div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-slate-900">{order.paymentMethod}</span>
                         {order.paymentMethod === 'Razorpay' && (
@@ -182,7 +182,7 @@ const Orders = () => {
                       </div>
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Address</div>
+                      <div className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Address</div>
                       <div className="font-semibold text-slate-900">
                         {order.shippingAddress.address}, {order.shippingAddress.city}
                       </div>
@@ -191,7 +191,7 @@ const Orders = () => {
 
                   {/* Items List */}
                   <div className="space-y-3 mb-6">
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Order Items</div>
+                    <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">Order Items</div>
                     {order.orderItems.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100">
                         <div className="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden">
@@ -212,7 +212,7 @@ const Orders = () => {
 
                   {/* Status Update Buttons */}
                   <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider self-center mr-2">Update Status:</span>
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wider self-center mr-2">Update Status:</span>
                     {['Pending', 'Shipped', 'Delivered', 'Cancelled'].map((s) => (
                       <button
                         key={s}

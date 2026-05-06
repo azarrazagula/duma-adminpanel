@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <div className="text-2xl font-extrabold bg-accent-gradient bg-clip-text text-transparent tracking-tight">
             DUMA ADMIN
           </div>
-          <button onClick={toggleSidebar} className="md:hidden p-2 text-slate-500 hover:text-slate-900">
+          <button onClick={toggleSidebar} aria-label="Close Sidebar" className="md:hidden p-2 text-slate-500 hover:text-slate-900">
             <Settings size={24} />
           </button>
         </div>

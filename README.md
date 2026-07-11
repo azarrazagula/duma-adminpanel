@@ -4,6 +4,21 @@ This documentation tracks the step-by-step development of the DUMA Admin Dashboa
 
 ---
 
+## 🌐 Live Demo
+
+> **[👉 Click here to open the Admin Panel](https://duma-adminpanel.netlify.app)**
+
+### 🔐 Demo Credentials
+
+| Field    | Value              |
+| :------- | :----------------- |
+| **Username** | `asker@gmail.com`  |
+| **Password** | `123456`           |
+
+> ⚠️ This is a demo account for preview purposes only.
+
+---
+
 ## 🛠️ Step-by-Step Development Journey
 
 ### **Step 1: Initial Setup & Styling**

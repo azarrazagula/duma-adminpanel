@@ -9,6 +9,7 @@ import { createCategory, deleteCategory, updateCategory } from '../EndpontsLogic
 import { IMAGE_BASE_URL } from '../constants/config';
 
 import { useAdmin } from '../context/AdminContext';
+import { ProductsSkeleton } from '../components/ui/Skeleton';
 
 const Products = ({ products, filteredProducts, loading, error, refreshProducts }) => {
   const { categories, refreshData } = useAdmin();
@@ -124,7 +125,7 @@ const Products = ({ products, filteredProducts, loading, error, refreshProducts 
     setShowCatModal(true);
   };
 
-  if (loading) return <div className="p-16 text-center text-slate-500 font-medium text-lg">Loading products...</div>;
+  if (loading) return <ProductsSkeleton />;
   if (error) return <div className="p-16 text-center text-red-500 font-medium">{error}</div>;
 
   return (

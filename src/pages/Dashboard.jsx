@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Package, ShoppingCart, Users, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Clock, Loader2 } from 'lucide-react';
+import { Package, ShoppingCart, Users, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Clock } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { DashboardSkeleton } from '../components/ui/Skeleton';
 
 const Dashboard = () => {
   const { products, orders, loading } = useAdmin();
@@ -27,13 +28,9 @@ const Dashboard = () => {
   ];
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-600 font-bold">Loading dashboard data...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
+
 
   return (
     <motion.div

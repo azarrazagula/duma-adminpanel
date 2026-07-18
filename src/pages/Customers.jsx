@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Search, Mail, Phone, MapPin, ShoppingBag, Ban, Eye, MoreVertical, Loader2, ShieldCheck, X, DollarSign, Trash2 } from 'lucide-react';
 import { toggleBlockCustomer, getCustomerDetails, deleteCustomer } from '../EndpontsLogics/customerService';
 import { useAdmin } from '../context/AdminContext';
+import { CustomersSkeleton } from '../components/ui/Skeleton';
 
 const Customers = () => {
   const { customers, loading, refreshData } = useAdmin();
@@ -71,12 +72,7 @@ const Customers = () => {
   const avatarColors = ['bg-violet-500', 'bg-cyan-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-indigo-500', 'bg-teal-500', 'bg-pink-500'];
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-500 font-bold">Loading customers...</p>
-      </div>
-    );
+    return <CustomersSkeleton />;
   }
 
   return (

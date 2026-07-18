@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, DollarSign, Package, ArrowUpRight, Loader2, Calendar } from 'lucide-react';
+import { TrendingUp, DollarSign, Package, ArrowUpRight, Calendar } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
+import { AnalyticsSkeleton } from '../components/ui/Skeleton';
 
 const Analytics = () => {
   const { orders, loading } = useAdmin();
@@ -47,12 +48,7 @@ const Analytics = () => {
   const avgOrderValue = orders.length > 0 ? (totalRevenue / orders.length).toFixed(2) : 0;
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-500 font-bold">Generating reports...</p>
-      </div>
-    );
+    return <AnalyticsSkeleton />;
   }
 
   return (

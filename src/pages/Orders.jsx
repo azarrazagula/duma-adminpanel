@@ -6,6 +6,7 @@ import { CreditCard, Mail, Phone, Calendar, Info } from 'lucide-react';
 import { IMAGE_BASE_URL } from '../constants/config';
 
 import { useAdmin } from '../context/AdminContext';
+import { OrdersSkeleton } from '../components/ui/Skeleton';
 
 const Orders = () => {
   const { orders, loading, refreshData } = useAdmin();
@@ -64,12 +65,7 @@ const Orders = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="animate-spin text-accent-primary mb-4" size={48} />
-        <p className="text-slate-600 font-bold">Loading orders...</p>
-      </div>
-    );
+    return <OrdersSkeleton />;
   }
 
   return (
